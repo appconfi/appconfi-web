@@ -1,0 +1,140 @@
+﻿@model FeatureToggleViewModel
+@using App.Web.Core.Models.Application;
+@{
+    ViewData["Title"] = "Feature Toggles";
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+}
+
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+
+<div class="admin-container">
+    <div class="row">
+        <div class="col-sm-2">
+            @Html.Partial("_applicationNavigation", ViewData["ApplicationId"], new ViewDataDictionary(ViewData) { { "selected", "toggles" } })
+        </div>
+        <div class="col-sm">
+            <h2 class="admin-heading d-flex justify-content-between align-items-center text-muted">
+                <span>Features</span>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-backdrop="true" data-target="#createFeatureToggle">+ New feature</button>
+            </h2>
+
+            <div class="dropdown" style="margin: 20px 0">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @Model.SelectedEnvironment.Name
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    @foreach (var env in Model.Environments.OrderBy(x => x.Name))
+                    {
+                        <a class="dropdown-item" asp-action="view" asp-controller="featuretoggles" asp-route-applicationId="@env.ApplicationId" asp-route-search="@ViewData["Search"]" asp-route-environmentId="@env.EnvironmentId">@env.Name</a>
+                    }
+                </div>
+            </div>
+            <form class="form-inline mb-4" method="get" asp-action="view">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search" value="@ViewData["Search"]">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <input type="hidden" name="applicationId" value="@ViewData["ApplicationId"]" />
+            </form>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-5">
+                            <strong>Feature</strong>
+                        </div>
+                        <div class="col-3">
+                            <strong>Toggle</strong>
+                        </div>
+                        <div class="col-3">
+                            <strong>Last Modified (UTC)</strong>
+                        </div>
+
+                    </div>
+                </li>
+                @foreach (var toggle in Model.FeatureToggles)
+                {
+                    <li class="list-group-item list-group-item-action">
+                        <div class="row">
+                            <div class="col-5 text-truncate">
+                                <a asp-action="detail" asp-route-featureToggleId="@toggle.Id" asp-route-applicationId="@ViewData["ApplicationId"]">
+                                    <strong>@toggle.Key</strong>
+                                </a>
+                            </div>
+                            <div class="col-3">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" data-environmentId="@toggle.Id" name="@toggle.Key" class="custom-control-input" onclick="editToggleClick(event,this)" id="cb-@toggle.Id" @(toggle.IsEnabled ? "checked" : "")>
+                                    <label class="custom-control-label" for="cb-@toggle.Id"></label>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <span>@(toggle.LastModifiedAt.HasValue ? toggle.LastModifiedAt.Value.ToString() : "---")</span>
+                            </div>
+                            <span class="list-actions">
+                                <a onclick="deleteToggle('@toggle.Id')" href="#" title="Delete"><span class="oi delete" data-glyph="trash"></span></a>
+                            </span>
+                        </div>
+                    </li>
+                }
+
+            </ul>
+            <div class="mt-16 float-right">
+                <a asp-action="compare" asp-route-applicationId="@ViewData["ApplicationId"]" target="_blank">
+                    <span class="oi" data-glyph="grid-two-up"></span>
+                    Grid view
+                </a>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!--Delete feature toggle confirmation modal-->
+@Html.Partial("_confirmationModal", new ConfirmationModalModel { Controller = "featuretoggles", Action = "delete", Title = "Are you sure you want to delete this feature toggle?", Body = "This feature toggle will be removed and all the values. This operation can't be undone", PositiveText = "Yes, I'm sure", RouteData = new Dictionary<string, string> { { "applicationId", ViewData["ApplicationId"].ToString() } } })
+
+
+<!--New feature toggle modal-->
+@Html.Partial("_createFeatureToggleModal", new NewApplicationFeatureToggleModel())
+
+
+
+@section scripts {
+
+    <script>
+
+        function deleteToggle(id) {
+            $('#confirmationModal-input-id').val(id);
+            $('#confirmationModal').modal('show');
+        };
+
+        function editToggleClick(e, element) {
+            var key = element.id;
+            var id = $(element).attr("data-environmentId");
+            if (!editToggle(key, id)) {
+                e.preventDefault();
+            }
+        };
+
+        function editToggle(key, id) {
+            var value = $('#' + key).is(":checked");
+
+            if (confirm("Are you sure?")) {
+                $.ajax({
+                    type: "POST",
+                    url: '/featuretoggles/editvalue?appliactionId=@ViewData["ApplicationId"]',
+                    data: {
+                        'FeatureToggleId': id,
+                        'EnvironmentId': '@Model.SelectedEnvironment.EnvironmentId',
+                        'IsEnabled': value
+                    },
+                    error: function () {
+                        alert("An unexpected error has occurred. Please try again later.");
+                    }
+                });
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+
+    </script>
+}

@@ -1,0 +1,100 @@
+﻿@model App.Web.Core.Models.Export.ExporterPageModel
+@using App.Web.Core.Models.Application;
+@{
+    ViewData["Title"] = "Export";
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+}
+
+
+<div class="admin-container">
+    <div class="row">
+        <div class="col-sm-2">
+            @Html.Partial("_applicationNavigation", ViewData["ApplicationId"], new ViewDataDictionary(ViewData) { { "selected", "export" } })
+        </div>
+        <div class="col-sm">
+            <h2 class="admin-heading d-flex justify-content-between align-items-center text-muted">
+                <span>Export</span>
+            </h2>
+            <div class="admin-container">
+                <form method="get" asp-action="download" asp-controller="export">
+                    <input type="hidden" name="appId" value="@ViewData["ApplicationId"]" />
+                    <div class="form-group">
+                        <h6><label for="Environment">1) Select your environment*</label></h6>
+                        <select class="form-control" name="envId" id="Environment" onchange="updateUrl()">
+                            @foreach (var env in Model.Environments)
+                            {
+                                <option value="@env.Id">@env.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <h6><label for="fn">5) File name</label></h6>
+                        <div class="form-group">
+                            <input class="form-control" type="text" name="fn" placeholder="your-file-name.ext" value="">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Export</button>
+
+                </form>
+            </div>
+            <h2 class="admin-heading d-flex justify-content-between align-items-center text-muted mt-32">
+                <span>Download</span>
+            </h2>
+            <p>Use this link to download a file your features. Replace the key with your private application key. You can find the private key @Html.ActionLink("here", "view", "accesskeys", routeValues: new Dictionary<string, string> { ["applicationId"] = ViewData["ApplicationId"].ToString() })</p>
+            <p>Click the link to copy in your clipboard:</p>
+            <div>
+                <a href="#" onclick="copyToClipboard()" id="download-link">@Model.BaseUrl</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function getSelectedValue(name, getText) {
+            var e = document.getElementById(name);
+            if (getText) {
+                return e.options[e.selectedIndex].text;
+            }
+            return e.options[e.selectedIndex].value;
+        };
+
+        function updateUrl() {
+            var applicationId = "@ViewData["ApplicationId"]";
+            var url = "@Model.BaseUrl/api/v1/"
+            var environment = getSelectedValue("Environment", true);
+            var resource = $('#rte:checked').val() == 3 ? "targetRules" : "features";
+
+            var fullUrl = url + resource + "?app=" + applicationId + "&env=" + environment + "&download=true&key=";
+            var html = fullUrl + "<strong>REPLACE-WITH-YOUR-SECRET-KEY</strong>";
+            $("#download-link").html(html);
+            $("#download-link").attr("link", fullUrl);
+        }
+
+        function copyToClipboard() {
+            var str = $("#download-link").attr("link");
+            const el = document.createElement('textarea');
+            el.value = str;
+            el.setAttribute('readonly', '');
+            el.style.position = 'absolute';
+            el.style.left = '-9999px';
+            document.body.appendChild(el);
+            const selected =
+                document.getSelection().rangeCount > 0
+                    ? document.getSelection().getRangeAt(0)
+                    : false;
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            if (selected) {
+                document.getSelection().removeAllRanges();
+                document.getSelection().addRange(selected);
+            }
+        }
+        $(function () {
+            updateUrl();
+        });
+    </script>
+}

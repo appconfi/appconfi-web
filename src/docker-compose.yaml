@@ -1,0 +1,34 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+      POSTGRES_DB: appconfidb
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    volumes:
+      - appconfi_postgres:/var/lib/postgresql/data
+      - appconfi_postgres_conf:/etc/postgresql/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d appconfidb -U dbuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  adminer:
+    image: adminer
+    ports:
+      - 3004:8080
+    links:
+      - "postgres:postgres"
+networks:
+  traefik:
+    external:
+      name: traefik
+volumes:
+  appconfi_postgres:
+  appconfi_postgres_conf:

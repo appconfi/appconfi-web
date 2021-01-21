@@ -1,0 +1,23 @@
+﻿@model IEnumerable<App.Web.Core.Models.Application.ApplicationModel>
+@using App.Web.Core.Models.Application;
+@{
+    Func<string> GetCurrentApp = () => {
+        var url = Context.Request.Path.ToString() + Context.Request.QueryString.ToString();
+        var app = Model.FirstOrDefault(x => url.Contains(x.Id.ToString()));
+        return app?.Name ?? "Applications";
+    };
+}
+<a style="font-weight:bolder; font-size: 16px;" class="text-uppercase nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    @GetCurrentApp()
+</a>
+<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+    @foreach (var application in Model)
+    {
+        <a class="dropdown-item" asp-controller="environments" asp-action="view" asp-route-applicationId="@application.Id">@application.Name</a>
+        <div class="dropdown-divider"></div>
+    }
+    <a class="dropdown-item" asp-controller="admin" asp-action="index"><strong>> All applications</strong></a>
+
+</div>
+
+

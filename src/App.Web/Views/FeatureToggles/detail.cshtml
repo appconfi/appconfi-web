@@ -1,0 +1,104 @@
+﻿@model FeatureToggleDetailViewModel
+@using App.Web.Core.Models.Application;
+@{
+    ViewData["Title"] = "Feature Toggle " + Model.FeatureToggle.Key;
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+}
+
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+
+<div class="admin-container">
+    <div class="row">
+        <div class="col-sm-2">
+            @Html.Partial("_applicationNavigation", ViewData["ApplicationId"], new ViewDataDictionary(ViewData) { { "selected", "toggles" } })
+        </div>
+        <div class="col-sm">
+            <h2 class="admin-heading d-flex justify-content-between align-items-center text-muted">
+                <span>@Model.FeatureToggle.Key</span>
+            </h2>
+            <ul class="list-group mt-4">
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-5">
+                            <strong>Environment</strong>
+                        </div>
+                        <div class="col-3">
+                            <strong>Toggle</strong>
+                        </div>
+                        <div class="col-2">
+                            <strong>Creation Date</strong>
+                        </div>
+                        <div class="col-2">
+                            <strong>Last Modified (UTC)</strong>
+                        </div>
+
+                    </div>
+                </li>
+                @foreach (var value in Model.FeatureToggleValues)
+                {
+                    <li class="list-group-item list-group-item-action">
+                        <div class="row">
+                            <div class="col-5 text-truncate">
+                                <strong>@value.EnvironmentName</strong>
+                            </div>
+                            <div class="col-3">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" data-environmentId="@value.EnvironmentId" data-featureToggleId="@Model.FeatureToggle.Id" name="@Model.FeatureToggle.Key" class="custom-control-input" onclick="editToggleClick(event,this)" id="cb-@value.EnvironmentId" @(value.IsEnabled ? "checked" : "")>
+                                    <label class="custom-control-label" for="cb-@value.EnvironmentId"></label>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <span>@value.CreatedAt.ToShortDateString()</span>
+                            </div>
+                            <div class="col-2">
+                                <span>@(value.LastModifiedAt.HasValue ? value.LastModifiedAt.Value.ToString() : "---")</span>
+                            </div>
+                        </div>
+                    </li>
+                }
+
+            </ul>
+        </div>
+        
+    </div>
+</div>
+
+@section scripts {
+
+    <script>
+
+        function editToggleClick(e, element) {
+            var key = element.id;
+            var envId = $(element).attr("data-environmentId");
+            var id = $(element).attr("data-featureToggleId");
+            if (!editToggle(key, id, envId)) {
+                e.preventDefault();
+            }
+        };
+
+        function editToggle(key, id, env) {
+            var value = $('#' + key).is(":checked");
+
+            if (confirm("Are you sure?")) {
+                $.ajax({
+                    type: "POST",
+                    url: '/featuretoggles/editvalue?appliactionId=@ViewData["ApplicationId"]',
+                    data: {
+                        'FeatureToggleId': id,
+                        'EnvironmentId': env,
+                        'IsEnabled': value
+                    },
+                    error: function () {
+                        alert("An unexpected error has occurred. Please try again later.");
+                    }
+                });
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+
+    </script>
+}

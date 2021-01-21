@@ -1,0 +1,11 @@
+﻿@model App.Web.Core.Models.Account.LoginModel;
+@{
+    Layout = "~/Views/Shared/_layout.cshtml";
+    ViewData["Title"] = "Verify email";
+
+}
+<div class="container-fluid text-center">
+    <span class="oi" data-glyph="thumb-up" style="font-size:32px;"></span>
+    <h5>The email verification was successfully </h5>
+    <p>Go to @Html.ActionLink("login", "login", "account") page</p>
+</div>

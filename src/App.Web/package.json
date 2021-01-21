@@ -1,0 +1,18 @@
+{
+  "name": "appconfi",
+  "version": "1.0.0",
+  "description": "Store your feature flags in the cloud",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"build" : "dotnet publish -c release",
+	"deploy" : "gcloud app deploy bin/Debug/netcoreapp2.2/publish/app.yaml"
+  },
+  "keywords": [
+    "feature",
+    "toggle",
+    "settings"
+  ],
+  "author": "Alejandro Dominguez",
+  "license": "MIT"
+}

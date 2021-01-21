@@ -1,0 +1,42 @@
+﻿@model App.Web.Core.Models.Application.EditApplicationFeatureToggleModel
+
+<div class="modal fade" id="editFeatureToggleModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form asp-controller="featuretoggles" asp-route-applicationId="@ViewData["ApplicationId"]"
+              asp-action="edit"
+              method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update feature toggle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div asp-validation-summary="All"></div>
+                    <label>Environment:</label> <strong>@Model.EnvironmentName</strong>
+                    <br />
+                    <input class="form-control form-control-lg" disabled value="" id="edit-toggle-name" placeholder="Key">
+                    <br />
+                    <div class="onoffswitch">
+                        <input type="checkbox" name="IsEnabled" class="onoffswitch-checkbox" id="edit-toggle-value">
+                        <label class="onoffswitch-label" for="edit-toggle-value"></label>
+                    </div>
+
+                    <input asp-for="EnvironmentId" type="hidden">
+                    <input id="edit-toggle-id" name="FeatureToggleId" value="" type="hidden">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section scripts {
+}

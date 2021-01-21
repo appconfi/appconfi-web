@@ -1,0 +1,52 @@
+﻿@model App.Web.Core.Models.Import.ImporterPageModel
+@{
+    ViewData["Title"] = "Environments";
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+}
+
+
+<div class="admin-container">
+    <div class="row">
+        <div class="col-sm-3">
+            @Html.Partial("_applicationNavigation", ViewData["ApplicationId"], new ViewDataDictionary(ViewData) { { "selected", "import" } })
+        </div>
+        <div class="col-sm">
+            <h2 class="admin-heading d-flex justify-content-between align-items-center text-muted">
+                <span>Import features</span>
+            </h2>
+            <div class="admin-container">
+                <form method="post" enctype="multipart/form-data" asp-action="post" asp-controller="import">
+                    <input type="hidden" name="applicationId" value="@ViewData["ApplicationId"]" />
+                    <div class="form-group">
+                        <h6><label for="Environment">1) Select your environment*</label></h6>
+                        <select class="form-control" name="EnvironmentId" id="Environment">
+                            @foreach (var env in Model.Enviroments)
+                            {
+                                <option value="@env.Id">@env.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <h6><label for="">2) Pick the format*</label></h6>
+                        <select class="form-control" name="Format">
+                            @foreach (var i in Model.Importers)
+                            {
+                                <option value="@i">@i</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <h6><label for="fn">4) File to import*</label></h6>
+                        <input type="file" name="File" />
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Import</button>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+

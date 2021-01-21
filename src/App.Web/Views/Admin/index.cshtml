@@ -1,0 +1,32 @@
+﻿@model IEnumerable<App.Domain.Application>
+@{
+    ViewData["Title"] = "Applications";
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+}
+<style>
+    .card {
+        margin: 10px;
+        border-left: 8px solid #9C27B0;
+    }
+</style>
+<div class="container admin-container">
+    <div class="text-right mb-2">
+        <button class="btn btn-success" data-toggle="modal" data-backdrop="true" data-target="#createNewApplicationModal">+ New application</button>
+    </div>
+    <div class="row">
+        @foreach (var app in Model)
+        {
+            <div class="col-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>@app.Name</strong></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@app.CreatedAt.ToShortDateString()</h6>
+                        <p class="card-text">Container for feature toggles and settings.</p>
+                        <a asp-controller="environments" asp-action="view" asp-route-applicationId="@app.Id" class="card-link text-capitalize">View</a>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>

@@ -1,0 +1,49 @@
+﻿@model App.Web.Core.Models.Application.AccessKeyModel
+@using App.Web.Core.Models.Application;
+
+@{
+    ViewData["Title"] = "Access key";
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+}
+
+<div class="admin-container">
+    <div class="row">
+        <div class="col-sm-2 col-12">
+            @Html.Partial("_applicationNavigation", ViewData["ApplicationId"], new ViewDataDictionary(ViewData) { { "selected", "keys" } })
+        </div>
+        <div class="col-sm">
+            <h2 class="admin-heading d-flex justify-content-between align-items-center text-muted">
+                <span>Access Key</span>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-backdrop="false" data-target="#confirmationModal">Regenerate key</button>
+            </h2>
+            <div style="margin:20px 0">
+                <p>
+                    This key provides read-only access to your data. It's suitable for deployment scripts, configure your pipelines and sharing download links with colleagues.
+                </p>
+                <h6>Application</h6>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1"><span class="oi" data-glyph="home"></span></span>
+                    </div>
+                    <input value="@ViewData["ApplicationId"]" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+                <h6>Key</h6>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1"><span class="oi" data-glyph="key"></span></span>
+                    </div>
+                    <input value="@Model.Secret" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Delete env-->
+@Html.Partial("_confirmationModal", new ConfirmationModalModel { Controller = "accesskeys", Action = "generate", Title = "Are you sure you want to change your secret key?", Body = "This operation can't be undone.", PositiveText = "Yes, I'm sure", RouteData = new Dictionary<string, string> { { "applicationId", ViewData["ApplicationId"].ToString() } } })
+
+
+@section scripts {
+}

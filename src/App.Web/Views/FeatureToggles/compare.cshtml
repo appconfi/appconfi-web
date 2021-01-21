@@ -1,0 +1,55 @@
+﻿@model CompareFeatureToggleViewModel
+@using App.Web.Core.Models.Application;
+@{
+    ViewData["Title"] = "Feature Toggles";
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+}
+
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+
+<div class="admin-container">
+    <div class="row">
+        <div class="col">
+            <h2 class="admin-heading d-flex justify-content-between align-items-center text-muted">
+                <span>Feature Toggles</span>
+            </h2>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <strong>Feature</strong>
+                        </th>
+                        @foreach (var env in Model.FeatureToggles)
+                        {
+                            <th>
+                                <strong>@env.Key</strong>
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var values in Model.FeatureToggles.First().Value)
+                    {
+                        <tr>
+                            <td class="text-truncate">
+                                <strong>@values.Key</strong>
+                            </td>
+                            @foreach (var toggle in Model.FeatureToggles)
+                            {
+                                <td>
+                                    @{var value = Model.FeatureToggles[toggle.Key].First(x => x.Key == values.Key);}
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" disabled class="custom-control-input" id="cb-@(value.SettingId+toggle.Key)" @(value.IsEnabled ? "checked" : "")>
+                                        <label class="custom-control-label" for="cb-@(value.SettingId+toggle.Key)"></label>
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

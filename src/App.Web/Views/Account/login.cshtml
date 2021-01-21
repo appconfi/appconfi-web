@@ -1,0 +1,31 @@
+﻿@model App.Web.Core.Models.Account.LoginModel;
+@{
+    Layout = "~/Views/Shared/_layout.cshtml";
+    ViewData["Title"] = "Login";
+
+}
+<form class="form-account" method="post">
+    <h1 class="h3 mb-5 font-weight-normal">sign in</h1>
+
+    <div>
+        <a tabindex="1" asp-controller="account" asp-action="loginGoogle" class="loginBtn loginBtn--google" asp-route-returnUrl="@Model.ReturnUrl">
+            Login with Google
+        </a>
+    </div>
+
+    <div class="mt-3 mb-3">- or -</div>
+
+    <label for="inputEmail" class="sr-only">Email address</label>
+    <div asp-validation-summary="All">
+        @ViewData["Error"]
+    </div>
+    <input class="form-control" asp-for="Email" placeholder="Email" /> <br />
+    <input class="form-control" asp-for="Password" placeholder="Password" /><br />
+    <button class="btn btn-outline-info btn-block" type="submit">Sign in</button>
+
+    <br />
+    <div class="mt-5">You don't have an account,  @Html.ActionLink("register", "register", "account")</div>
+    <p>@Html.ActionLink("Forgotten password?", "forgot", "account")</p>
+    <p class="mt-3 mb-3 text-muted">© @DateTime.UtcNow.Year</p>
+</form>
+

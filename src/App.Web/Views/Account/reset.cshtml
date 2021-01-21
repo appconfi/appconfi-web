@@ -1,0 +1,36 @@
+﻿@model App.Web.Core.Models.Account.ResetPasswordModel;
+@{
+    Layout = "~/Views/Shared/_layout.cshtml";
+    ViewData["Title"] = "Reset Your Password";
+    var changed = ViewData.ContainsKey("Changed");
+}
+
+@if (!changed)
+{
+    <form class="form-account" asp-controller="account"
+          asp-action="reset"
+          method="post">
+
+        <h1 class="h3 mb-5 font-weight-normal">Reset Your Password</h1>
+        <div asp-validation-summary="All">
+            @ViewData["ModelError"]
+        </div>
+
+        <input class="form-control" asp-for="Password" placeholder="New Password" /><br />
+        <input type="hidden" name="Token" value="@ViewData["Token"]" />
+        <button class="btn btn-lg btn-outline-info btn-block" type="submit">Reset</button>
+
+        <p class="mt-3 mb-3 text-muted">© @DateTime.UtcNow.Year</p>
+    </form>
+}
+else
+{
+    <form class="form-account" asp-controller="account"
+          asp-action="forgot"
+          method="post">
+        <h1 class="h3 mb-5 font-weight-normal">Done!</h1>
+        <p>Your password changed.</p>
+        <a asp-action="login">Go back to login</a>
+    </form>
+
+}

@@ -1,0 +1,36 @@
+﻿@model App.Web.Core.Models.Account.ForgotModel;
+@{
+    Layout = "~/Views/Shared/_layout.cshtml";
+    ViewData["Title"] = "Reset Your Password";
+
+    var requested = ViewData.ContainsKey("Send");
+}
+
+@if(!requested)
+{
+<form class="form-account" asp-controller="account"
+      asp-action="forgot"
+      method="post">
+
+    <h1 class="h3 mb-5 font-weight-normal">Reset Your Password</h1>
+    <div asp-validation-summary="All">
+        @ViewData["ModelError"]
+    </div>
+
+    <input class="form-control" asp-for="Email" placeholder="Email" /><br />
+
+    <button class="btn btn-lg btn-outline-info btn-block" type="submit">Request</button>
+
+    <p class="mt-3 mb-3 text-muted">© @DateTime.UtcNow.Year</p>
+</form>
+}
+else {
+<form class="form-account" asp-controller="account"
+      asp-action="forgot"
+      method="post">
+    <h1 class="h3 mb-5 font-weight-normal">Done!</h1>
+    <p>We've sent you an email with password reset instructions.</p>
+    <a asp-action="login">Go back to login</a>
+</form>
+
+}

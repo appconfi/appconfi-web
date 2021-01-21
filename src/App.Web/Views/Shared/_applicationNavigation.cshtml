@@ -1,0 +1,45 @@
+﻿@model Guid
+@{
+    Func<string, string> getActiveClass = (string name) => ViewData.ContainsKey("selected") && ViewData["selected"].ToString() == name ? "active" : String.Empty;
+}
+    <div class="list-group app-nav">
+        <a class="list-group-item list-group-item-action @getActiveClass("environment")" asp-controller="environments" asp-action="view" asp-route-applicationId="@Model.ToString()">
+            <span class="oi" data-glyph="globe"></span>
+            Environments
+        </a>
+        <a class="list-group-item list-group-item-action @getActiveClass("toggles")" asp-controller="featuretoggles" asp-action="view" asp-route-applicationId="@Model.ToString()">
+            <span class="oi" data-glyph="fork"></span>
+            Features
+        </a>
+        <a class="list-group-item list-group-item-action @getActiveClass("targeting")" asp-controller="targeting" asp-action="view" asp-route-applicationId="@Model.ToString()">
+            <span class="oi" data-glyph="target"></span>
+            User Targeting
+        </a>
+        <a class="list-group-item list-group-item-action @getActiveClass("keys")" asp-controller="accesskeys" asp-action="view" asp-route-applicationId="@Model.ToString()">
+            <span class="oi" data-glyph="key"></span>
+            Access Key
+        </a>
+        <a class="list-group-item list-group-item-action @getActiveClass("export")" asp-controller="export" asp-action="index" asp-route-applicationId="@Model.ToString()">
+            <span class="oi" data-glyph="cloud-download"></span>
+            Export
+        </a>
+        <a class="list-group-item list-group-item-action @getActiveClass("users")" asp-controller="users" asp-action="view" asp-route-applicationId="@Model.ToString()">
+            <span class="oi" data-glyph="people"></span>
+            Team
+        </a>
+        <a class="list-group-item list-group-item-action @getActiveClass("import")" asp-controller="import" asp-action="index" asp-route-applicationId="@Model.ToString()">
+            <span class="oi" data-glyph="cloud-upload"></span>
+            Importation tool
+        </a>
+        <a class="list-group-item list-group-item-action @getActiveClass("activity")" asp-controller="activitylogs" asp-action="view" asp-route-applicationId="@Model.ToString()">
+            <span class="oi" data-glyph="list"></span>
+            Activity log
+        </a>
+        <a href="#" class="list-group-item list-group-item-action delete" style="color:#dc3545" data-toggle="modal" data-backdrop="true" data-target="#deleteApplicationModal">
+            <span class="oi delete" data-glyph="trash"></span>
+            Delete application
+        </a>
+    </div>
+
+
+@Html.Partial("_deleteApplicationModal")

@@ -1,0 +1,88 @@
+﻿@model App.SharedKernel.Repository.PagedResult<App.Domain.ActivityLog>
+
+
+@{
+    ViewData["Title"] = "Activity Log";
+    Layout = "~/Views/Shared/_layoutAdmin.cshtml";
+
+    Func<DateTime, string> timeAgo = (DateTime theDate) =>
+    {
+        Dictionary<long, string> thresholds = new Dictionary<long, string>();
+        int minute = 60;
+        int hour = 60 * minute;
+        int day = 24 * hour;
+        thresholds.Add(60, "{0} seconds ago");
+        thresholds.Add(minute * 2, "a minute ago");
+        thresholds.Add(45 * minute, "{0} minutes ago");
+        thresholds.Add(120 * minute, "an hour ago");
+        thresholds.Add(day, "{0} hours ago");
+        thresholds.Add(day * 2, "yesterday");
+        thresholds.Add(day * 30, "{0} days ago");
+        thresholds.Add(day * 365, "{0} months ago");
+        thresholds.Add(long.MaxValue, "{0} years ago");
+        long since = (DateTime.Now.Ticks - theDate.Ticks) / 10000000;
+        foreach (long threshold in thresholds.Keys)
+        {
+            if (since < threshold)
+            {
+                TimeSpan t = new TimeSpan((DateTime.Now.Ticks - theDate.Ticks));
+                return string.Format(thresholds[threshold], (t.Days > 365 ? t.Days / 365 : (t.Days > 0 ? t.Days : (t.Hours > 0 ? t.Hours : (t.Minutes > 0 ? t.Minutes : (t.Seconds > 0 ? t.Seconds : 0))))).ToString());
+            }
+        }
+        return "";
+    };
+}
+
+<div class="admin-container">
+    <div class="row">
+        <div class="col-sm-2">
+            @Html.Partial("_applicationNavigation", ViewData["ApplicationId"], new ViewDataDictionary(ViewData) { { "selected", "activity" } })
+        </div>
+        <div class="col-sm">
+            <h2 class="admin-heading d-flex justify-content-between align-items-center text-muted">
+                <span>Activity Log</span>
+            </h2>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Operation name</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Time (UTC)</th>
+                        <th scope="col">Time stamp (UTC)</th>
+                        <th scope="col">Initiated by</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model)
+                    {
+                        <tr data-toggle="tooltip" data-placement="top" title="@log.Description">
+                            <td>@log.Name</td>
+                            <td>@log.Status.ToString()</td>
+                            <td>@timeAgo(log.TimeStamp)</td>
+                            <td>@log.TimeStamp</td>
+                            <td>@log.InitiatedBy.Account.Email</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <nav aria-label="Activity logs page">
+                <ul class="pagination justify-content-left">
+                    @if (!Model.FirstPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="view" asp-route-applicationId="@ViewData["ApplicationId"]" asp-route-page="@Model.PreviousNumber" tabindex="-1">Previous</a>
+                        </li>
+                    }
+                    @if (!Model.LastPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="view" asp-route-applicationId="@ViewData["ApplicationId"]" asp-route-page="@Model.NextNumber">Next</a>
+                        </li>
+                    }
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

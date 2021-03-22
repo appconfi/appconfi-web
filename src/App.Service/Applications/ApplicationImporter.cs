@@ -40,7 +40,7 @@ namespace App.Service.Applications
 
             foreach (var entry in values)
             {
-                environment.AddOrEditFeatureToggleValue(entry.Key, FeatureToggleValue.Parse(entry.Value).IsEnabled);
+                environment.AddOrEditFeatureToggleValue(entry.Key, description: null, FeatureToggleValue.Parse(entry.Value).IsEnabled);
             }
             await unitOfWork.SaveAsync();
         }

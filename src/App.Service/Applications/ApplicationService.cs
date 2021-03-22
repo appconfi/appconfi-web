@@ -83,7 +83,7 @@ namespace App.Service.Applications
             var userId = authService.CurrentUserId();
 
             var userApplications = unitOfWork.Repository<Domain.UserApplication, int>();
-            var myApplicationsSpecification = ApplicationSpecifications.UserApplicationWithPermissions(userId, Domain.ApplicationPermission.Read);
+            var myApplicationsSpecification = ApplicationSpecifications.UserApplicationWithPermissions(userId, Domain.ApplicationPermissions.Read);
             var applications = await userApplications.GetAsync(myApplicationsSpecification, "Application");
 
             return applications.Select(a => a.Application);

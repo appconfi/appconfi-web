@@ -18,7 +18,7 @@ namespace App.Service.Applications
         {
             var userApplications = unitOfWork.Repository<Domain.UserApplication, int>();
 
-            var spec = ApplicationSpecifications.UserApplicationWithPermissions(userId, Domain.ApplicationPermission.Owner).And(ApplicationSpecifications.UserApplicationById(applicationId));
+            var spec = ApplicationSpecifications.UserApplicationWithPermissions(userId, Domain.ApplicationPermissions.Owner).And(ApplicationSpecifications.UserApplicationById(applicationId));
             var application = await userApplications.FirstOrDefaultAsync(spec);
 
             return application != null;
@@ -28,7 +28,7 @@ namespace App.Service.Applications
         {
             var userApplications = unitOfWork.Repository<Domain.UserApplication, int>();
 
-            var spec = ApplicationSpecifications.UserApplicationWithPermissions(userId, Domain.ApplicationPermission.Read).And(ApplicationSpecifications.UserApplicationById(applicationId));
+            var spec = ApplicationSpecifications.UserApplicationWithPermissions(userId, Domain.ApplicationPermissions.Read).And(ApplicationSpecifications.UserApplicationById(applicationId));
             var application = await userApplications.FirstOrDefaultAsync(spec);
 
             return application != null;
@@ -38,7 +38,7 @@ namespace App.Service.Applications
         {
             var userApplications = unitOfWork.Repository<Domain.UserApplication, int>();
 
-            var spec = ApplicationSpecifications.UserApplicationWithPermissions(userId, Domain.ApplicationPermission.Admin).And(ApplicationSpecifications.UserApplicationById(applicationId));
+            var spec = ApplicationSpecifications.UserApplicationWithPermissions(userId, Domain.ApplicationPermissions.Admin).And(ApplicationSpecifications.UserApplicationById(applicationId));
             var application = await userApplications.FirstOrDefaultAsync(spec);
 
             return application != null;

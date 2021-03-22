@@ -34,7 +34,7 @@ namespace App.Service.Applications
             this.authService = authService;
         }
 
-        public async Task NewToggle(Guid applicationId, string key, bool enable)
+        public async Task NewToggle(Guid applicationId, string key, string description, bool enable)
         {
             var userId = authService.CurrentUserId();
             Guard.IsTrue(await hasApplicationPermission.ToWrite(userId, applicationId), "You don't have permissions to create feature toggle");
@@ -42,7 +42,7 @@ namespace App.Service.Applications
             var applications = unitOfWork.Repository<Domain.Application, Guid>();
             var application = await applications.FirstOrDefaultAsync(new DirectSpecification<Domain.Application>(x => x.Id == applicationId), "FeatureToggles,Environments.FeatureToggleValues");
 
-            application.AddNewFeatureToggleForDefaultEnv(key, enable);
+            application.AddNewFeatureToggleForDefaultEnv(key, description, enable);
 
             activityService.Log(
                 LogString.WithName("Feature toggle", "created"),

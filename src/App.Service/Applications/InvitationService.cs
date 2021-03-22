@@ -104,7 +104,7 @@ namespace App.Service.Applications
             var invitedUser = await users.FirstOrDefaultAsync(new DirectSpecification<Domain.User>(x => x.Account.Email == email), "Account");
             if (invitedUser != null)
             {
-                application.GrantPermissionForUser(invitedUser, Domain.ApplicationPermission.Admin);
+                application.GrantPermissionForUser(invitedUser, Domain.ApplicationPermissions.Admin);
                 invitationUrl += $"/account/login";
             }
             else

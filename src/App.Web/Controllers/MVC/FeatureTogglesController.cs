@@ -26,7 +26,8 @@ namespace App.Web.Controllers.MVC
             this.featureToggleService = applicationFeatureToggleService;
         }
 
-        public async Task<IActionResult> View([FromQuery] Guid applicationId, [FromQuery] Guid? environmentId = null, [FromQuery] string search = null)
+        [Route("a/{applicationId}/features")]
+        public async Task<IActionResult> View([FromRoute] Guid applicationId, [FromQuery] Guid? environmentId = null, [FromQuery] string search = null)
         {
             ViewData["ApplicationId"] = applicationId;
 
@@ -54,7 +55,8 @@ namespace App.Web.Controllers.MVC
             return View(model);
         }
 
-        public async Task<IActionResult> Detail([FromQuery] Guid applicationId, [FromQuery] Guid featureToggleId)
+        [Route("a/{applicationId}/features/{featureToggleId}")]
+        public async Task<IActionResult> Detail([FromRoute] Guid applicationId, [FromRoute] Guid featureToggleId)
         {
             ViewData["ApplicationId"] = applicationId;
 
@@ -73,9 +75,8 @@ namespace App.Web.Controllers.MVC
             return View(model);
         }
 
-
-
-        public async Task<IActionResult> Compare([FromQuery] Guid applicationId)
+        [Route("a/{applicationId}/features/compare")]
+        public async Task<IActionResult> Compare([FromRoute] Guid applicationId)
         {
             ViewData["ApplicationId"] = applicationId;
 
@@ -95,13 +96,13 @@ namespace App.Web.Controllers.MVC
             return View(model);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> New([FromQuery] Guid applicationId, NewApplicationFeatureToggleModel model)
+        [HttpPost("a/{applicationId}/features/new")]
+        public async Task<IActionResult> New([FromRoute] Guid applicationId, NewFeatureToggleModel model)
         {
             try
             {
                 if (ModelState.IsValid)
-                    await featureToggleService.NewToggle(applicationId, model.Key, model.IsEnabled);
+                    await featureToggleService.NewToggle(applicationId, model.Key, model.Description, model.IsEnabled);
             }
             catch (AppException e)
             {
@@ -119,8 +120,8 @@ namespace App.Web.Controllers.MVC
             return RedirectToAction("view", "featureToggles", new { applicationId });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Edit([FromForm] EditApplicationFeatureToggleModel model, [FromQueryAttribute] Guid applicationId)
+        [HttpPost("a/{applicationId}/features/edit")]
+        public async Task<IActionResult> Edit([FromForm] EditApplicationFeatureToggleModel model, [FromRoute] Guid applicationId)
         {
             await featureToggleService.EditToggle(model.EnvironmentId, model.FeatureToggleId, model.IsEnabled);
 

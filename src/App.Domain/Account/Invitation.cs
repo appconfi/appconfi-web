@@ -17,7 +17,7 @@ namespace App.Domain
 
         public DateTime CreatedAt { get; set; }
 
-        public ApplicationPermission Permission { get; set; }
+        public ApplicationPermissions Permission { get; set; }
 
         public static Invitation NewInvitation(string email, Application application)
         {
@@ -32,7 +32,7 @@ namespace App.Domain
                 Email = email,
                 Id = Guid.NewGuid(),
                 Token = Guid.NewGuid().ToString().Replace("-", ""),
-                Permission = ApplicationPermission.Admin
+                Permission = ApplicationPermissions.Admin
             };
         }
 

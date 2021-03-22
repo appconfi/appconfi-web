@@ -17,7 +17,8 @@ namespace App.Web.Controllers.MVC
             this.accessKeysService = accessKeysService;
         }
 
-        public async Task<IActionResult> View([FromQuery] Guid applicationId)
+        [Route("a/{applicationId}/keys")]
+        public async Task<IActionResult> View([FromRoute] Guid applicationId)
         {
             var key = await accessKeysService.GetKey(applicationId);
             ViewData["ApplicationId"] = applicationId;

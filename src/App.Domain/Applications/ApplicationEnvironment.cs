@@ -38,15 +38,13 @@ namespace App.Domain
             };
         }
 
-        public FeatureToggleValue AddOrEditFeatureToggleValue(string featureKey, bool isEnabled)
+        public FeatureToggleValue AddOrEditFeatureToggleValue(string key, string description, bool isEnabled)
         {
             var application = Application;
-            var toggle = application.FeatureToggles.FirstOrDefault(x => x.Key == featureKey);
+            var toggle = application.FeatureToggles.FirstOrDefault(x => x.Key == key);
 
             if (toggle == null)
-            {
-                toggle = application.AddNewFeatureToggle(featureKey);
-            }
+                toggle = application.AddNewFeatureToggle(key, description);
 
             var featureValue = FeatureToggleValues.FirstOrDefault(x => x.FeatureToggleId == toggle.Id);
             if (featureValue == null)

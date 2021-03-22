@@ -16,9 +16,9 @@ namespace App.Domain
 
         public Guid UserId { get; set; }
 
-        public ApplicationPermission Permission { get; set; }
+        public ApplicationPermissions Permission { get; set; }
 
-        public static UserApplication GrantPermission(User user, Application application, ApplicationPermission permission)
+        public static UserApplication GrantPermission(User user, Application application, ApplicationPermissions permission)
         {
             return new UserApplication
             {
@@ -33,7 +33,7 @@ namespace App.Domain
 
         public static ISpecification<UserApplication> WithOwner()
         {
-            return new DirectSpecification<UserApplication>(x => x.Permission == ApplicationPermission.Owner);
+            return new DirectSpecification<UserApplication>(x => x.Permission == ApplicationPermissions.Owner);
         }
 
         public static ISpecification<UserApplication> WithApplication(Guid applicationId)
@@ -47,7 +47,7 @@ namespace App.Domain
         }
     }
 
-    public enum ApplicationPermission
+    public enum ApplicationPermissions
     {
         Owner = 3,
         Admin = 2,

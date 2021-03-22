@@ -18,7 +18,8 @@ namespace App.Web.Controllers.MVC
             this.invitationService = invitationService;
         }
 
-        public async Task<IActionResult> View([FromQuery] Guid applicationId)
+        [Route("a/{applicationId}/users")]
+        public async Task<IActionResult> View([FromRoute] Guid applicationId)
         {
             ViewData["ApplicationId"] = applicationId;
 

@@ -19,15 +19,16 @@ namespace App.Web.Controllers.MVC
             this.environmentService = environmentService;
         }
 
-        public async Task<IActionResult> View([FromQuery] Guid applicationId)
+        [Route("a/{applicationId}/environments")]
+        public async Task<IActionResult> View([FromRoute] Guid applicationId)
         {
             var envs = await environmentService.GetEnvironments(applicationId);
             ViewData["ApplicationId"] = applicationId;
             return View(envs.Select(e => new ApplicationEnvironmentModel { IsDefault = e.IsDefault, ApplicationId = e.ApplicationId, EnvironmentId = e.Id, Name = e.Name }));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> New([FromQuery] Guid applicationId, [FromForm] NewEnvironmentModel model)
+        [HttpPost("a/{applicationId}/environments/new")]
+        public async Task<IActionResult> New([FromRoute] Guid applicationId, [FromForm] NewEnvironmentModel model)
         {
             if (ModelState.IsValid)
             {
@@ -45,7 +46,7 @@ namespace App.Web.Controllers.MVC
         }
 
         [HttpPost]
-        public async Task<IActionResult> Delete([FromForm] Guid id, [FromQueryAttribute] Guid applicationId)
+        public async Task<IActionResult> Delete([FromForm] Guid id, [FromQuery] Guid applicationId)
         {
             await environmentService.DeleteEnvironment(id);
 

@@ -28,7 +28,8 @@ namespace App.Web.Controllers.MVC
             this.environmentService = environmentService;
         }
 
-        public async Task<IActionResult> View([FromQuery] Guid applicationId, [FromQuery] Guid? environmentId = null)
+        [Route("a/{applicationId}/targeting")]
+        public async Task<IActionResult> View([FromRoute] Guid applicationId, [FromQuery] Guid? environmentId = null)
         {
             ViewData["ApplicationId"] = applicationId;
             var environments = await environmentService.GetEnvironments(applicationId);

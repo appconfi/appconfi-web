@@ -41,7 +41,7 @@
                                 <strong>@userApplication.User.Account.Email</strong>
                                 <div class="font-weight-light">@userApplication.User.FullName</div>
                             </div>
-                            @if (userApplication.Permission != App.Domain.ApplicationPermission.Owner)
+                            @if (userApplication.Permission != App.Domain.ApplicationPermissions.Owner)
                             {
                                 <span class="list-actions">
                                     <a href="#" onclick="removeAccess('@userApplication.UserId')" title="Delete"><span class="oi delete" data-glyph="trash"></span></a>

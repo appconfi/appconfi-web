@@ -29,7 +29,8 @@ namespace App.Web.Controllers.MVC
             this.environmentService = environmentService;
         }
 
-        public async Task<IActionResult> Index([FromQuery] Guid applicationId)
+        [Route("a/{applicationId}/import")]
+        public async Task<IActionResult> Index([FromRoute] Guid applicationId)
         {
             ViewData["ApplicationId"] = applicationId;
 

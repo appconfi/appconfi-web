@@ -37,7 +37,7 @@ namespace App.Domain
             };
 
             //Define owner for the application
-            application.GrantPermissionForUser(owner, ApplicationPermission.Owner);
+            application.GrantPermissionForUser(owner, ApplicationPermissions.Owner);
 
             //Create default environment
             application.AddEnvironment(DEFAULT_ENV_NAME, true);
@@ -51,7 +51,7 @@ namespace App.Domain
             return application;
         }
 
-        public UserApplication GrantPermissionForUser(User user, ApplicationPermission permission)
+        public UserApplication GrantPermissionForUser(User user, ApplicationPermissions permission)
         {
             if (Users == null)
                 Users = new List<UserApplication>();
@@ -68,7 +68,7 @@ namespace App.Domain
         {
             Guard.IsNotNull(Users);
 
-            var userApplication = Users.FirstOrDefault(x => x.UserId == userId && x.Permission != ApplicationPermission.Owner);
+            var userApplication = Users.FirstOrDefault(x => x.UserId == userId && x.Permission != ApplicationPermissions.Owner);
             Guard.IsNotNull("The user does not exits");
 
             Users.Remove(userApplication);
@@ -102,23 +102,23 @@ namespace App.Domain
 
         }
 
-        public FeatureToggle AddNewFeatureToggle(string key)
+        public FeatureToggle AddNewFeatureToggle(string key, string description)
         {
             Guard.IsFalse(FeatureToggles.Any(x => x.Key == key), "Duplicated key for this application");
 
-            var featureToggle = FeatureToggle.New(key, this);
+            var featureToggle = FeatureToggle.New(key, description, this);
             FeatureToggles.Add(featureToggle);
 
             return featureToggle;
         }
 
-        public FeatureToggle AddNewFeatureToggleForDefaultEnv(string key, bool enabled)
+        public FeatureToggle AddNewFeatureToggleForDefaultEnv(string key, string description, bool enabled)
         {
             var defaultEnv = Environments.FirstOrDefault(x => x.IsDefault);
 
             Guard.IsNotNull(defaultEnv, "Invalid default environment for this application");
 
-            var featureToggle = AddNewFeatureToggle(key);
+            var featureToggle = AddNewFeatureToggle(key, description);
             var appVal = defaultEnv.AddOrEditFeatureToggleValue(featureToggle.Id, enabled);
 
             return featureToggle;

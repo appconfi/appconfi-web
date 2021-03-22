@@ -14,7 +14,7 @@ namespace App.Service.Applications
         Task<IEnumerable<ApplicationEnvKeyFeatureDto>> GetKeyValues(Guid applicationId, Guid featureToggleId);
         Task<IEnumerable<FeatureToggleValue>> GetValues(Guid environmentId);
         Task<IEnumerable<FeatureToggleValue>> GetValues(Guid applicationId, Guid featureToggleId);
-        Task NewToggle(Guid applicationId, string key, bool enable);
+        Task NewToggle(Guid applicationId, string key, string description , bool enable);
         Task RemoveFeatureToggle(Guid toggleId);
     }
 }

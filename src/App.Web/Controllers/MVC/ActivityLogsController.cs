@@ -16,7 +16,8 @@ namespace App.Web.Controllers.MVC
             this.activity = activity;
         }
 
-        public async Task<IActionResult> View([FromQuery] Guid applicationId, [FromQuery] int page = 0, [FromQuery] int pageSize = 20)
+        [Route("a/{applicationId}/logs")]
+        public async Task<IActionResult> View([FromRoute] Guid applicationId, [FromQuery] int page = 0, [FromQuery] int pageSize = 20)
         {
             ViewData["ApplicationId"] = applicationId;
 

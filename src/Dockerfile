@@ -1,10 +1,10 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
+﻿FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 RUN ls
 # Copy csproj and restore as distinct layers
-FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS build
 COPY App.sln ./
 COPY App.Domain/*.csproj ./App.Domain/
 COPY App.Infrastructure/*.csproj ./App.Infrastructure/

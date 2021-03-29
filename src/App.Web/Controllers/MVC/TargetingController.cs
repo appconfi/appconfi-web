@@ -51,42 +51,52 @@ namespace App.Web.Controllers.MVC
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewPercent([FromQuery] Guid applicationId, [FromForm] NewTargetingPercentModel model)
+        public async Task<IActionResult> CreateOrUpdatePercent([FromQuery] Guid applicationId, [FromForm] NewTargetingPercentModel model)
         {
-            if (ModelState.IsValid)
+            var error = "";
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    await userTargetingService.CreatePerPercent(applicationId, model.EnvironmentId, model.FeatureToggleId, model.Percent);
-                }
-                catch (AppException e)
-                {
-                    return RedirectToAction("view", "targeting", new { applicationId, error = e.Message });
-                }
-            }
-            var error = string.Join(" | ", ModelState.Values
+                error = string.Join(" | ", ModelState.Values
                                         .SelectMany(v => v.Errors)
                                         .Select(e => e.ErrorMessage));
+            }
+            try
+            {
+                if (model.Id.HasValue)
+                    await userTargetingService.UpdatePerPercent(model.Id.Value, model.Percent);
+                else
+                    await userTargetingService.CreatePerPercent(applicationId, model.EnvironmentId, model.FeatureToggleId, model.Percent);
+            }
+            catch (AppException e)
+            {
+                return RedirectToAction("view", "targeting", new { applicationId, error = e.Message });
+            }
             return RedirectToAction("view", "targeting", new { applicationId, model.EnvironmentId, error });
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewSpecific([FromQuery] Guid applicationId, [FromForm] NewTargetingSpecifiModel model)
+        public async Task<IActionResult> CreateOrUpdatePerUser([FromQuery] Guid applicationId, [FromForm] NewTargetingSpecifiModel model)
         {
-            if (ModelState.IsValid)
+            var error = "";
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    await userTargetingService.CreatePerUser(applicationId, model.EnvironmentId, model.FeatureToggleId, model.Property, model.List, model.TargetOption);
-                }
-                catch (AppException e)
-                {
-                    return RedirectToAction("view", "targeting", new { applicationId, error = e.Message });
-                }
+                error = string.Join(" | ", ModelState.Values
+                                        .SelectMany(v => v.Errors)
+                                        .Select(e => e.ErrorMessage));
             }
-            var error = string.Join(" | ", ModelState.Values
-                                          .SelectMany(v => v.Errors)
-                                          .Select(e => e.ErrorMessage));
+            try
+            {
+                if (model.Id.HasValue)
+                    await userTargetingService.UpdatePerUser(model.Id.Value, model.Property, model.List, model.TargetOption);
+
+                else
+                    await userTargetingService.CreatePerUser(applicationId, model.EnvironmentId, model.FeatureToggleId, model.Property, model.List, model.TargetOption);
+
+            }
+            catch (AppException e)
+            {
+                return RedirectToAction("view", "targeting", new { applicationId, error = e.Message });
+            }
             return RedirectToAction("view", "targeting", new { applicationId, model.EnvironmentId, error });
         }
 

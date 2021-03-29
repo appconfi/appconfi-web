@@ -26,15 +26,25 @@ namespace App.Service.Targeting
             this.unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<UserTargeting>> GetTargets(Guid environemntId)
+        public async Task<IEnumerable<UserTargeting>> GetTargets(Guid environmentId)
         {
             var userId = authService.CurrentUserId();
 
-            Guard.IsTrue(await hasEnvironmentPermission.ToRead(userId, environemntId));
+            Guard.IsTrue(await hasEnvironmentPermission.ToRead(userId, environmentId));
 
             var userTargetings = unitOfWork.Repository<UserTargeting, Guid>();
 
-            return await userTargetings.GetAsync(UserTargeting.ByEnvironment(environemntId), "FeatureToggle,TargetRule");
+            return await userTargetings.GetAsync(UserTargeting.ByEnvironment(environmentId), "FeatureToggle,TargetRule");
+        }
+
+        public async Task<UserTargeting> GetTarget(Guid id)
+        {
+            var userId = authService.CurrentUserId();
+            var userTargetings = unitOfWork.Repository<UserTargeting, Guid>();
+
+            var target = await userTargetings.FirstOrDefaultAsync(UserTargeting.ById(id), "FeatureToggle,TargetRule");
+            Guard.IsTrue(await hasEnvironmentPermission.ToRead(userId, target.EnvironmentId));
+            return target;
         }
 
         public async Task CreatePerPercent(Guid applicationId, Guid environmentId, Guid featureToggleId, int percent)
@@ -54,6 +64,19 @@ namespace App.Service.Targeting
             await unitOfWork.SaveAsync();
         }
 
+        public async Task UpdatePerPercent(Guid id, int percent)
+        {
+            var userId = authService.CurrentUserId();
+            var userTargetings = unitOfWork.Repository<UserTargeting, Guid>();
+            var target = await userTargetings.FirstOrDefaultAsync(UserTargeting.ById(id), "TargetRule");
+            Guard.IsTrue(await hasEnvironmentPermission.ToWrite(userId, target.EnvironmentId), "You don't have permissions to update");
+
+            (target.TargetRule as TargetPercentage).Percent.SetNumber(percent);
+
+            await unitOfWork.SaveAsync();
+        }
+
+
         public async Task CreatePerUser(Guid applicationId, Guid environmentId, Guid featureToggleId, string property, string userList, TargetOption option)
         {
             var userId = authService.CurrentUserId();
@@ -68,6 +91,18 @@ namespace App.Service.Targeting
 
             var target = UserTargeting.PerUser(environmentId, featureToggleId, option, property, userList);
             userTargetings.Insert(target);
+
+            await unitOfWork.SaveAsync();
+        }
+
+        public async Task UpdatePerUser(Guid id, string property, string valuesList, TargetOption option)
+        {
+            var userId = authService.CurrentUserId();
+            var userTargetings = unitOfWork.Repository<UserTargeting, Guid>();
+            var userTarget = await userTargetings.FirstOrDefaultAsync(UserTargeting.ById(id), "TargetRule");
+            Guard.IsTrue(await hasEnvironmentPermission.ToWrite(userId, userTarget.EnvironmentId), "You don't have permissions to update");
+
+            (userTarget.TargetRule as TargetSpecificUsers).Update(property, option, valuesList);
 
             await unitOfWork.SaveAsync();
         }

@@ -37,6 +37,16 @@ namespace App.Domain
             };
         }
 
+        public void Update(string property, TargetOption option, string valueList)
+        {
+            Guard.IsNotNullOrEmpty(property, "Invalid property");
+            Guard.IsNotNullOrEmpty(valueList, "Invalid userList");
+
+            Option = option;
+            Property = property;
+            ValuesList = ValuesList.NewList(valueList);
+        }
+
         public override string ToString()
         {
             switch (Option)

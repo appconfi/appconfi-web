@@ -17,5 +17,12 @@ namespace App.Domain
                 Number = number
             };
         }
+
+        public void SetNumber(int number)
+        {
+            Guard.GreaterOrEqualThan(number, 0, "Invalid percentage");
+            Guard.IsTrue(number <= 100, "Invalid percentage");
+            Number = number;
+        }
     }
 }

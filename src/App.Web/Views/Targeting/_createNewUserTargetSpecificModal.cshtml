@@ -1,9 +1,9 @@
 ﻿@model App.Web.Core.Models.Targeting.TargetingViewModel
 
 <div class="modal fade" id="createNewTargetSpecificModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <form asp-controller="targeting"
-              asp-action="newspecific" asp-route-applicationId="@ViewData["ApplicationId"]"
+              asp-action="createorupdateperuser" asp-route-applicationId="@ViewData["ApplicationId"]"
               method="post">
             <div class="modal-content">
                 <div class="modal-header">

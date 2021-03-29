@@ -29,7 +29,7 @@
                     @Model.SelectedEnvironment.Name
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    @foreach (var env in Model.Environments.OrderBy(x=> x.Name))
+                    @foreach (var env in Model.Environments.OrderBy(x => x.Name))
                     {
                         <a class="dropdown-item" asp-action="view" asp-controller="targeting" asp-route-applicationId="@env.ApplicationId" asp-route-environmentId="@env.Id">@env.Name</a>
                     }
@@ -76,6 +76,14 @@
                             </div>
                             <span class="list-actions">
                                 <a onclick="deleteRule('@target.Id')" href="#" title="Delete"><span class="oi delete" data-glyph="trash"></span></a>
+                                @if (target.TargetRule.Name == "percentage")
+                                {
+                                    <a onclick="editPercentageRule('@target.Id', @((target.TargetRule as App.Domain.TargetPercentage).Percent.Number))" href="#" title="Delete"><span class="oi pencil" data-glyph="pencil"></span></a>
+                                }
+                                else
+                                {
+                                    <a onclick="editListRule('@target.Id', '@((int)(target.TargetRule as App.Domain.TargetSpecificUsers).Option)', '@((target.TargetRule as App.Domain.TargetSpecificUsers).Property)', '@((target.TargetRule as App.Domain.TargetSpecificUsers).ValuesList.List)')" href="#" title="Delete"><span class="oi pencil" data-glyph="pencil"></span></a>
+                                }
                             </span>
                         </div>
                     </li>
@@ -93,15 +101,33 @@
 @Html.Partial("_createNewUserTargetPercentModal", Model)
 @Html.Partial("_createNewUserTargetSpecificModal", Model)
 
+<!--Update target modal-->
+@Html.Partial("_updateUserTargetPercentModal", Model)
+@Html.Partial("_updateUserTargetSpecificModal", Model)
+
 <!--Delete option-->
 @Html.Partial("_confirmationModal", new ConfirmationModalModel { Controller = "targeting", Action = "delete", Title = "Are you sure you want to delete this target rule?", Body = "This target rule will be removed. This operation can't be undone", PositiveText = "Yes, I'm sure", RouteData = new Dictionary<string, string> { { "applicationId", ViewData["ApplicationId"].ToString() } } })
 
 
-@section scripts{ 
+@section scripts{
     <script>
         function deleteRule(id) {
             $('#confirmationModal-input-id').val(id);
             $('#confirmationModal').modal('show');
+        }
+
+        function editPercentageRule(id, number) {
+            $('#updateTargetPercentModal-input-id').val(id);
+            $('#updateTargetPercentModal-input-number').val(number);
+            $('#updateTargetPercentModal').modal('show');
+        }
+
+        function editListRule(id, option, property, list) {
+            $('#updateTargetSpecificModal-input-id').val(id);
+            $('#updateTargetSpecificModal-input-option-' + option).prop('checked', true);;
+            $('#updateTargetSpecificModal-input-property').val(property);
+            $('#updateTargetSpecificModal-input-list').val(list);
+            $('#updateTargetSpecificModal').modal('show');
         }
     </script>
 }

@@ -1,9 +1,9 @@
 ﻿@model App.Web.Core.Models.Targeting.TargetingViewModel
 
 <div class="modal fade" id="createNewTargetPercentModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <form asp-controller="targeting"
-              asp-action="newpercent" asp-route-applicationId="@ViewData["ApplicationId"]"
+              asp-action="createorupdatepercent" asp-route-applicationId="@ViewData["ApplicationId"]"
               method="post">
             <div class="modal-content">
                 <div class="modal-header">
@@ -37,8 +37,8 @@
                     <label for="customRange3">Percent</label>
                     <input type="range" class="custom-range" min="0" max="100" step="10" name="Percent" id="Percent">
                     <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="IsEnabled" name="IsEnabled" value="true" checked>
-                        <label class="custom-control-label" for="IsEnabled">Is featured enabled</label>
+                        <input type="checkbox" class="custom-control-input" disabled id="IsEnabled" name="IsEnabled" value="true" checked>
+                        <label class="custom-control-label" for="IsEnabled">Feature enabled</label>
                     </div>
                 </div>
                 <div class="modal-footer">

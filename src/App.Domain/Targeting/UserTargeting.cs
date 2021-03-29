@@ -24,6 +24,11 @@ namespace App.Domain
             return new DirectSpecification<UserTargeting>(x => x.EnvironmentId == env);
         }
 
+        public static ISpecification<UserTargeting> ById(Guid id)
+        {
+            return new DirectSpecification<UserTargeting>(x => x.Id == id);
+        }
+
         public static ISpecification<UserTargeting> ByApplication(Guid app)
         {
             return new DirectSpecification<UserTargeting>(x => x.Environment.ApplicationId == app);
